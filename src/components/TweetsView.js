@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 
-function TweetsView() {
-  const [tweetsList, setTweetsList] = useState([]);
-  let [deleteList, setDeleteList] = useState([]);
-  let testTweet;
-  let tweetid = "1164223532848615424";
+function TweetsView({ toDisplay, setToDisplay }) {
+  const [deleteList, setDeleteList] = useState([]);
+
   useEffect(() => {
     //update state with list of tweets
     fetch("http://localhost:4000/alltweets", {
@@ -19,22 +17,13 @@ function TweetsView() {
       .then(resJson => {
         /* use setTweetsList(resJson.tweetsList.tweets) to update*/
         if (resJson.success) {
-          setTweetsList(resJson.tweets);
+          //setTweetsList(resJson.tweets);
+          setToDisplay(resJson.tweets);
         }
       })
       .catch(err => console.log("get all tweets error", err));
-    //console.log("testAPI", testAPI());
   }, []);
 
-  function testAPI() {
-    fetch("http://localhost:4000/findTweetById", {
-      method: "GET"
-      // mode: "no-cors"
-    })
-      .then(res => res.json())
-      .then(resJson => console.log(resJson))
-      .catch(err => console.log("ERROR:", err));
-  }
   function onDeleteClick(event) {
     event.preventDefault();
     if (
@@ -48,6 +37,9 @@ function TweetsView() {
       console.log("Im gonna delete these tweets:", deleteList);
       fetch("http://localhost:4000/deleteTweets", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ deleteList })
       }).then(res => console.log(res));
     } else {
@@ -55,15 +47,25 @@ function TweetsView() {
     }
   }
 
+  function testAPI() {
+    fetch("http://localhost:4000/findTweetById", {
+      method: "GET"
+      // mode: "no-cors"
+    })
+      .then(res => res.json())
+      .then(resJson => console.log(resJson))
+      .catch(err => console.log("ERROR:", err));
+  }
+
   return (
     <div>
-      <h2> This is a tweets view</h2>
+      <h2> Tweets </h2>
       <button type="submit" onClick={event => onDeleteClick(event)}>
         Delete Tweets
       </button>
       <div>
         {/* div containing all tweets */}
-        {tweetsList.map(tweet => {
+        {toDisplay.map(tweet => {
           // return (
           //   <div className="tweetContainer">
           //     <span>Display Name</span>
@@ -75,7 +77,7 @@ function TweetsView() {
           return (
             <div
               style={{ display: "flex" }}
-              key={tweetsList.indexOf(tweet)}
+              key={toDisplay.indexOf(tweet)}
               className="tweetContainer"
             >
               {/* {console.log(String(tweet.id))} */}
@@ -83,7 +85,7 @@ function TweetsView() {
               {/* <TwitterTweetEmbed tweetId={String(tweet.id)} /> */}
               <input
                 type="checkbox"
-                id={`check${tweetsList.indexOf(tweet)}`}
+                id={`check${toDisplay.indexOf(tweet)}`}
                 value={tweet.id} //string to use as value of checkbox if it is submitted while toggled on
                 onChange={event => {
                   if (!deleteList.includes(event.target.value)) {

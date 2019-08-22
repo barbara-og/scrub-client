@@ -34,12 +34,13 @@
 
 /* My Stuff */
 .banner {
-  background-color: darkblue;
-  border: solid darkblue 1px;
+  background-color: skyblue;
+  border: solid skyblue 1px;
   color: white;
+  font-size: 160%;
 }
 .about {
-  border: solid darkblue 1px;
+  border: solid skyblue 1px;
   width: 500px;
   height: 500px;
   display: flex;
@@ -48,10 +49,10 @@
 }
 
 .landing {
-  background-color: lightcyan;
+  background-color: aliceblue;
 }
 
 body {
   height: 100vh;
-  background-color: lightcyan;
+  background-color: aliceblue;
 }
